@@ -98,7 +98,8 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 					}
 					bot.sendMessage({
 						to: channelID,
-						message: output
+						message: output,
+						tts: command.tts
 					});
 				}
 				else if(command.func == 'roll') {
@@ -108,7 +109,8 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 					}
 					bot.sendMessage({
 						to: channelID,
-						message: output
+						message: output,
+						tts: command.tts
 					});
 				}
 				else if(command.func == 'toggle') {
