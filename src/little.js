@@ -1,4 +1,3 @@
-// import http from 'http';
 import Config from './config';
 import DiscordClient from 'discord.io';
 import _ from 'lodash';
@@ -61,7 +60,7 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 		if(/^lol /.test(message)){
 			if(/^lol add /.test(message)) {
 				if(/^lol add advanced /.test(message)) {
-					Config.addCommand(JSON.parse(message.substring(8)));
+					Config.addCommand(JSON.parse(message.substring(17)));
 				}
 				else {
 					Config.addCommand({
