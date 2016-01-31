@@ -22,10 +22,15 @@ Using objects in JSON format:
   "case": boolean,
   "exp": string,
   "func": string,
+  "name": string,
   "special": boolean,
   "tts": boolean
 }
 ```
-Edit little.conf or type `lol add advanced {JSON Object}` in discord.
+Add the command to little.conf or type `lol add advanced {JSON Object}` in discord.
 
-Simple 'say' commands can be added with `lol add input output` where input is the text to match (exactly), and output is the response from the bot.
+Simple 'say' commands can be added with `lol add input output` where input is the text to match, and output is the response from the bot.
+
+###To remove commands:
+
+Delete the command object from little.conf or type `lol remove name` in discord, where name can be the "name" field or the "exp" field of the command.

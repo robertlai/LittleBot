@@ -56,10 +56,10 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 	console.log(message);
 	if(userID == bot.id) { return; }
 
-	if(userID == Config.little) {
-		if(/^lol /.test(message)){
+	if(/^lol /.test(message)){
+		try {
 			if(/^lol add /.test(message)) {
-				if(/^lol add advanced /.test(message)) {
+				if(/^lol add advanced /.test(message) && userID == Config.little) {
 					Config.addCommand(JSON.parse(message.substring(17)));
 				}
 				else {
@@ -80,6 +80,12 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 			bot.sendMessage({
 				to: channelID,
 				message: 'lol ok'
+			});
+		}
+		catch(e) {
+			bot.sendMessage({
+				to: channelID,
+				message: 'lol nope'
 			});
 		}
 	}
