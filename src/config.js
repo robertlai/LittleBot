@@ -2,6 +2,7 @@ import fs from 'fs';
 import _ from 'lodash';
 
 const configFileName = 'little.conf';
+const defaultConfigFileName = 'default.conf';
 
 var Config = {
 	addCommand(input) {
@@ -42,8 +43,21 @@ function saveConfig() {
 
 console.log('Loading config...');
 
-var data = fs.readFileSync(configFileName, 'utf8');
-Config = _.assignIn(Config, JSON.parse(data));
+try{
+	var stats = fs.lstatSync(configFileName);
+	var data;
+	if(stats.isFile()) {
+		data = fs.readFileSync(configFileName, 'utf8');
+		Config = _.assignIn(Config, JSON.parse(data));
+	}
+	else {
+		data = fs.readFileSync(defaultConfigFileName, 'utf8');
+		Config = _.assignIn(Config, JSON.parse(data));
+	}
+}
+catch(e){
+	console.log('Failed to get config.');
+}
 
 console.log('Done.');
 
