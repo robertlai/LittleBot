@@ -19,16 +19,15 @@ function transform(value, pct, hash) {
 }
  
 bot.on('ready', () => {
-	console.log(bot.username + ' - (' + bot.id + ')');
-	console.log(new Date());
+	console.log('Bot: ' + bot.username + ' - (' + bot.id + ')');
+	console.log('Started: ' + new Date());
 	bot.setPresence({
 		game: Config.status
 	});
+	console.log('Status: ' + Config.status);
 });
 
 bot.on('presence', (user, userID, status, gameName, rawEvent) => {
-	console.log(user);
-	console.log(status);
 	if (Config.notifsEnabled){
 		var notif = Config.notifications[userID];
 		if(!notif) { return; }
@@ -39,6 +38,7 @@ bot.on('presence', (user, userID, status, gameName, rawEvent) => {
 					to: Config.little,
 					message: notif.username + ' is online'
 				});
+				console.log('Notif: ' + notif.username + ' is online');
 			}
 			else if(notif.online == true && status == 'offline') {
 				notif.online = false;
@@ -46,14 +46,13 @@ bot.on('presence', (user, userID, status, gameName, rawEvent) => {
 					to: Config.little,
 					message: notif.username + ' is offline'
 				});
+				console.log('Notif: ' + notif.username + ' is offline');
 			}
 		}
 	}
 });
 
 bot.on('message', (user, userID, channelID, message, rawEvent) => {
-	console.log(user);
-	console.log(message);
 	if(userID == bot.id) { return; }
 
 	if(/^lol/.test(message)) {
@@ -67,18 +66,23 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 				if(!tokens[2] || !tokens[3]) {
 					throw new Error('Invalid params');
 				}
+				var newCommand;
 				if(tokens[2] == 'advanced' && userID == Config.little) {
-					Config.addCommand(JSON.parse(tokens.slice(3).join(' ')));
+					newCommand = JSON.parse(tokens.slice(3).join(' '));
+					Config.addCommand(newCommand);
+					console.log('Added command: ' + newCommand.name || newCommand.exp);
 				}
 				else {
-					Config.addCommand({
+					newCommand = {
 						admin: false,
 						args: tokens.slice(3).join(' '),
 						case: true,
 						exp: '^' + tokens[2] + '$',
 						func: 'say',
 						name: tokens[2]
-					});
+					};
+					Config.addCommand(newCommand);
+					console.log('Added command: ' + newCommand.name);
 				}
 			}
 			else if(tokens[1] == 'remove') {
@@ -86,18 +90,21 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 					throw new Error('Invalid params');
 				}
 				Config.removeCommand(tokens[2]);
+				console.log('Removed command: ' + tokens[2]);
 			}
 			else if(tokens[1] == 'subscribe' && userID == Config.little) {
 				if(!tokens[2] || !tokens[3]) {
 					throw new Error('Invalid params');
 				}
 				Config.addNotif(tokens[2], tokens.slice(3).join(' '));
+				console.log('Subscribed to: ' + tokens[2]);
 			}
 			else if(tokens[1] == 'unsubscribe' && userID == Config.little) {
 				if(!tokens[2]) {
 					throw new Error('Invalid params');
 				}
 				Config.removeNotif(tokens[2]);
+				console.log('Unsubscribed from: ' + tokens[2]);
 			}
 			else {
 				throw new Error ('Invalid command');
@@ -161,6 +168,8 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 						game: output
 					});
 				}
+				console.log('Message: ' + userID + ' - ' + message);
+				console.log('Output: ' + output);
 			}
 		}
 	});
