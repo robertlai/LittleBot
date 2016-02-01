@@ -30,6 +30,10 @@ var Config = {
 		});
 		saveConfig();
 	},
+	setStatus(status) {
+		this.status = status;
+		saveConfig();
+	},
 	toggle(prop) {
 		this[prop] = !this[prop];
 		saveConfig();

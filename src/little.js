@@ -133,6 +133,7 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 					if(command.special) {
 						output = transform(output, pct, hash);
 					}
+					Config.setStatus(output);
 					bot.setPresence({
 						game: output
 					});
