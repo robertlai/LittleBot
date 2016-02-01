@@ -20,6 +20,7 @@ var Config = {
 	},
 	toggle(prop) {
 		this[prop] = !this[prop];
+		saveConfig();
 	}
 };
 

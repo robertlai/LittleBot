@@ -58,23 +58,27 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 
 	if(/^lol /.test(message)){
 		try {
-			if(/^lol add /.test(message)) {
-				if(/^lol add advanced /.test(message) && userID == Config.little) {
-					Config.addCommand(JSON.parse(message.substring(17)));
+			var tokens = message.split(' ').slice(2);
+			if(/^lol add\s/.test(message)) {
+				if(tokens[0] == 'advanced' && userID == Config.little) {
+					Config.addCommand(JSON.parse(tokens.slice(1).join(' ')));
 				}
 				else {
 					Config.addCommand({
 						admin: false,
-						args: message.substring(9 + message.split(' ')[2].length),
+						args: tokens.slice(1).join(' '),
 						case: true,
-						exp: '^' + message.split(' ')[2] + '$',
+						exp: '^' + tokens[0] + '$',
 						func: 'say',
-						name: message.split(' ')[2]
+						name: tokens[0]
 					});
 				}
 			}
-			else if(/^lol remove /.test(message)) {
-				Config.removeCommand(message.split(' ')[2]);
+			else if(/^lol remove\s/.test(message)) {
+				Config.removeCommand(tokens[0]);
+			}
+			else if(/^lol subscribe\s/.test(message) && userID == Config.little) {
+				// Config.addNotif();
 			}
 
 			bot.sendMessage({
