@@ -15,7 +15,19 @@ var Config = {
 		});
 		saveConfig();
 	},
-	save() {
+	addNotif(id, name) {
+		id = id.replace(/^<@|>$/g, '');
+		name = name.replace(/^<@|>$/g, '');
+		this.notifications[id] = { username: name };
+		saveConfig();
+	},
+	removeNotif(val) {
+		val = val.replace(/^<@|>$/g, '');
+		this.notifications = _.transform(this.notifications, (result, value, key) => {
+			if(key != val && value.username != val){
+				result[key] = value;
+			}
+		});
 		saveConfig();
 	},
 	toggle(prop) {
@@ -30,6 +42,7 @@ function loadConfig() {
 			fs.readFile(configFileName, 'utf8', (err, data) => {
 				if (err) throw err;
 				Config = _.assignIn(Config, JSON.parse(data));
+				console.log('Config loaded.');
 			});
 		}
 	});

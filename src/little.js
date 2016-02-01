@@ -78,7 +78,10 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 				Config.removeCommand(tokens[0]);
 			}
 			else if(/^lol subscribe\s/.test(message) && userID == Config.little) {
-				// Config.addNotif();
+				Config.addNotif(tokens[0], tokens.slice(1).join(' '));
+			}
+			else if(/^lol unsubscribe\s/.test(message) && userID == Config.little) {
+				Config.removeNotif(tokens[0]);
 			}
 
 			bot.sendMessage({
