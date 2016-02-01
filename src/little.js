@@ -56,32 +56,51 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 	console.log(message);
 	if(userID == bot.id) { return; }
 
-	if(/^lol /.test(message)){
+	if(/^lol/.test(message)) {
 		try {
-			var tokens = message.split(' ').slice(2);
-			if(/^lol add\s/.test(message)) {
-				if(tokens[0] == 'advanced' && userID == Config.little) {
-					Config.addCommand(JSON.parse(tokens.slice(1).join(' ')));
+			var tokens = message.split(' ');
+
+			if(!tokens[1]) {
+				throw new Error('Invalid command');
+			}
+			if(tokens[1] == 'add') {
+				if(!tokens[2] || !tokens[3]) {
+					throw new Error('Invalid params');
+				}
+				if(tokens[2] == 'advanced' && userID == Config.little) {
+					Config.addCommand(JSON.parse(tokens.slice(3).join(' ')));
 				}
 				else {
 					Config.addCommand({
 						admin: false,
-						args: tokens.slice(1).join(' '),
+						args: tokens.slice(3).join(' '),
 						case: true,
-						exp: '^' + tokens[0] + '$',
+						exp: '^' + tokens[2] + '$',
 						func: 'say',
-						name: tokens[0]
+						name: tokens[2]
 					});
 				}
 			}
-			else if(/^lol remove\s/.test(message)) {
-				Config.removeCommand(tokens[0]);
+			else if(tokens[1] == 'remove') {
+				if(!tokens[2]) {
+					throw new Error('Invalid params');
+				}
+				Config.removeCommand(tokens[2]);
 			}
-			else if(/^lol subscribe\s/.test(message) && userID == Config.little) {
-				Config.addNotif(tokens[0], tokens.slice(1).join(' '));
+			else if(tokens[1] == 'subscribe' && userID == Config.little) {
+				if(!tokens[2] || !tokens[3]) {
+					throw new Error('Invalid params');
+				}
+				Config.addNotif(tokens[2], tokens.slice(3).join(' '));
 			}
-			else if(/^lol unsubscribe\s/.test(message) && userID == Config.little) {
-				Config.removeNotif(tokens[0]);
+			else if(tokens[1] == 'unsubscribe' && userID == Config.little) {
+				if(!tokens[2]) {
+					throw new Error('Invalid params');
+				}
+				Config.removeNotif(tokens[2]);
+			}
+			else {
+				throw new Error ('Invalid command');
 			}
 
 			bot.sendMessage({
@@ -90,10 +109,14 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 			});
 		}
 		catch(e) {
-			bot.sendMessage({
-				to: channelID,
-				message: 'lol nope'
-			});
+			console.log(e);
+
+			if(e.message == 'Invalid params'){
+				bot.sendMessage({
+					to: channelID,
+					message: 'lol nope'
+				});
+			}
 		}
 	}
 
