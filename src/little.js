@@ -57,6 +57,10 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 
 	if(/^lol/.test(message)) {
 		try {
+			if(userID != Config.little) {
+				throw new Error('Not authorized');
+			}
+
 			var tokens = message.split(' ');
 
 			if(!tokens[1]) {
@@ -84,6 +88,12 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 					Config.addCommand(newCommand);
 					console.log('Added command: ' + newCommand.name);
 				}
+			}
+			else if(tokens[1] == 'list') {
+				bot.sendMessage({
+					to: channelID,
+					message: JSON.stringify(Config.commands, null, '	')
+				});
 			}
 			else if(tokens[1] == 'remove') {
 				if(!tokens[2]) {
@@ -118,7 +128,7 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 		catch(e) {
 			console.log(e);
 
-			if(e.message == 'Invalid params'){
+			if(e.message == 'Invalid params' || e.message == 'Not authorized'){
 				bot.sendMessage({
 					to: channelID,
 					message: 'lol nope'
