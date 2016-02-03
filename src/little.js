@@ -142,7 +142,7 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 			var exp = new RegExp(command.exp, (!command.case ? 'i' : ''));
 			if(exp.test(message)) {
 				var output = command.args;
-				var pct = message.substring(message.split(' ')[0].length);
+				var pct = message.split(' ').slice(1).join(' ');
 				var hash = '<@' + userID + '>';
 
 				if(command.func == 'say') {
