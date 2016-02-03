@@ -53,7 +53,7 @@ function loadConfig() {
 }
 
 function saveConfig() {
-	fs.writeFile(configFileName, JSON.stringify(Config), (err) => {
+	fs.writeFile(configFileName, JSON.stringify(Config, null, '	'), (err) => {
 		if (err) throw err;
 		console.log('Config saved.');
 	});

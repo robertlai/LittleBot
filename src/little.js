@@ -57,6 +57,10 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 
 	if(/^lol/.test(message)) {
 		try {
+			if(userID != Config.little) {
+				throw new Error('Not authorized');
+			}
+
 			var tokens = message.split(' ');
 
 			if(!tokens[1]) {
@@ -66,11 +70,16 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 				if(!tokens[2] || !tokens[3]) {
 					throw new Error('Invalid params');
 				}
+				var currentCommands = _(Config.commands).map((command) => {
+					return [command.name, command.exp];
+				})
+				.flatten()
+				.compact()
+				.value();
+
 				var newCommand;
 				if(tokens[2] == 'advanced' && userID == Config.little) {
 					newCommand = JSON.parse(tokens.slice(3).join(' '));
-					Config.addCommand(newCommand);
-					console.log('Added command: ' + newCommand.name || newCommand.exp);
 				}
 				else {
 					newCommand = {
@@ -81,9 +90,21 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 						func: 'say',
 						name: tokens[2]
 					};
-					Config.addCommand(newCommand);
-					console.log('Added command: ' + newCommand.name);
 				}
+
+				if(currentCommands.indexOf(newCommand.name) + currentCommands.indexOf(newCommand.exp) > -2) {
+					throw new Error('Conflict error');
+				}
+				else {
+					Config.addCommand(newCommand);
+					console.log('Added command: ' + newCommand.name || newCommand.exp);
+				}
+			}
+			else if(tokens[1] == 'list') {
+				bot.sendMessage({
+					to: channelID,
+					message: JSON.stringify(Config.commands, null, '	')
+				});
 			}
 			else if(tokens[1] == 'remove') {
 				if(!tokens[2]) {
@@ -118,7 +139,7 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 		catch(e) {
 			console.log(e);
 
-			if(e.message == 'Invalid params'){
+			if(e.message == 'Invalid params' || e.message == 'Not authorized' || e.message == 'Conflict error'){
 				bot.sendMessage({
 					to: channelID,
 					message: 'lol nope'
@@ -132,7 +153,7 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 			var exp = new RegExp(command.exp, (!command.case ? 'i' : ''));
 			if(exp.test(message)) {
 				var output = command.args;
-				var pct = message.substring(message.split(' ')[0].length);
+				var pct = message.split(' ').slice(1).join(' ');
 				var hash = '<@' + userID + '>';
 
 				if(command.func == 'say') {
