@@ -57,16 +57,15 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 
 	if(/^lol/.test(message)) {
 		try {
-			if(userID != Config.little) {
-				throw new Error('Not authorized');
-			}
-
 			var tokens = message.split(' ');
 
 			if(!tokens[1]) {
 				throw new Error('Invalid command');
 			}
 			if(tokens[1] == 'add') {
+				if(userID != Config.little) {
+					throw new Error('Not authorized');
+				}
 				if(!tokens[2] || !tokens[3]) {
 					throw new Error('Invalid params');
 				}
@@ -101,12 +100,18 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 				}
 			}
 			else if(tokens[1] == 'list') {
+				if(userID != Config.little) {
+					throw new Error('Not authorized');
+				}
 				bot.sendMessage({
 					to: channelID,
 					message: JSON.stringify(Config.commands, null, '	')
 				});
 			}
 			else if(tokens[1] == 'remove') {
+				if(userID != Config.little) {
+					throw new Error('Not authorized');
+				}
 				if(!tokens[2]) {
 					throw new Error('Invalid params');
 				}
@@ -114,6 +119,9 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 				console.log('Removed command: ' + tokens[2]);
 			}
 			else if(tokens[1] == 'subscribe' && userID == Config.little) {
+				if(userID != Config.little) {
+					throw new Error('Not authorized');
+				}
 				if(!tokens[2] || !tokens[3]) {
 					throw new Error('Invalid params');
 				}
@@ -121,6 +129,9 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 				console.log('Subscribed to: ' + tokens[2]);
 			}
 			else if(tokens[1] == 'unsubscribe' && userID == Config.little) {
+				if(userID != Config.little) {
+					throw new Error('Not authorized');
+				}
 				if(!tokens[2]) {
 					throw new Error('Invalid params');
 				}
