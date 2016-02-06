@@ -1,4 +1,5 @@
 import Config from './config';
+import Lol from './lol';
 import DiscordClient from 'discord.io';
 import _ from 'lodash';
 
@@ -35,7 +36,7 @@ bot.on('presence', (user, userID, status, gameName, rawEvent) => {
 			if(notif.online == false && status == 'online') {
 				notif.online = true;
 				bot.sendMessage({
-					to: Config.little,
+					to: Config.owner,
 					message: notif.username + ' is online'
 				});
 				console.log('Notif: ' + notif.username + ' is online');
@@ -43,7 +44,7 @@ bot.on('presence', (user, userID, status, gameName, rawEvent) => {
 			else if(notif.online == true && status == 'offline') {
 				notif.online = false;
 				bot.sendMessage({
-					to: Config.little,
+					to: Config.owner,
 					message: notif.username + ' is offline'
 				});
 				console.log('Notif: ' + notif.username + ' is offline');
@@ -58,88 +59,13 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 	if(/^lol/.test(message)) {
 		try {
 			var tokens = message.split(' ');
-
-			if(!tokens[1]) {
-				throw new Error('Invalid command');
-			}
-			if(tokens[1] == 'add') {
-				if(userID != Config.little) {
-					throw new Error('Not authorized');
-				}
-				if(!tokens[2] || !tokens[3]) {
-					throw new Error('Invalid params');
-				}
-				var currentCommands = _(Config.commands).map((command) => {
-					return [command.name, command.exp];
-				})
-				.flatten()
-				.compact()
-				.value();
-
-				var newCommand;
-				if(tokens[2] == 'advanced' && userID == Config.little) {
-					newCommand = JSON.parse(tokens.slice(3).join(' '));
+			if(Lol[tokens[1]]) {
+				if(Config[Lol[tokens[1]].auth].indexOf(userID) > -1) {
+					Lol[tokens[1]].func(Config, tokens, bot, channelID);
 				}
 				else {
-					newCommand = {
-						admin: false,
-						args: tokens.slice(3).join(' '),
-						case: true,
-						exp: '^' + tokens[2] + '$',
-						func: 'say',
-						name: tokens[2]
-					};
+					throw new Error('Unauthorized');
 				}
-
-				if(currentCommands.indexOf(newCommand.name) + currentCommands.indexOf(newCommand.exp) > -2) {
-					throw new Error('Conflict error');
-				}
-				else {
-					Config.addCommand(newCommand);
-					console.log('Added command: ' + newCommand.name || newCommand.exp);
-				}
-			}
-			else if(tokens[1] == 'list') {
-				if(userID != Config.little) {
-					throw new Error('Not authorized');
-				}
-				bot.sendMessage({
-					to: channelID,
-					message: JSON.stringify(Config.commands, null, '	')
-				});
-			}
-			else if(tokens[1] == 'remove') {
-				if(userID != Config.little) {
-					throw new Error('Not authorized');
-				}
-				if(!tokens[2]) {
-					throw new Error('Invalid params');
-				}
-				Config.removeCommand(tokens[2]);
-				console.log('Removed command: ' + tokens[2]);
-			}
-			else if(tokens[1] == 'subscribe' && userID == Config.little) {
-				if(userID != Config.little) {
-					throw new Error('Not authorized');
-				}
-				if(!tokens[2] || !tokens[3]) {
-					throw new Error('Invalid params');
-				}
-				Config.addNotif(tokens[2], tokens.slice(3).join(' '));
-				console.log('Subscribed to: ' + tokens[2]);
-			}
-			else if(tokens[1] == 'unsubscribe' && userID == Config.little) {
-				if(userID != Config.little) {
-					throw new Error('Not authorized');
-				}
-				if(!tokens[2]) {
-					throw new Error('Invalid params');
-				}
-				Config.removeNotif(tokens[2]);
-				console.log('Unsubscribed from: ' + tokens[2]);
-			}
-			else {
-				throw new Error ('Invalid command');
 			}
 
 			bot.sendMessage({
@@ -150,17 +76,15 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 		catch(e) {
 			console.log(e);
 
-			if(e.message == 'Invalid params' || e.message == 'Not authorized' || e.message == 'Conflict error'){
-				bot.sendMessage({
-					to: channelID,
-					message: 'lol nope'
-				});
-			}
+			bot.sendMessage({
+				to: channelID,
+				message: 'lol nope'
+			});
 		}
 	}
 
 	_.forEach(Config.commands, (command) => {
-		if(!command.admin || userID == Config.little) {
+		if(!command.admin || userID == Config.owner) {
 			var exp = new RegExp(command.exp, (!command.case ? 'i' : ''));
 			if(exp.test(message)) {
 				var output = command.args;
@@ -200,13 +124,13 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 						game: output
 					});
 				}
-				console.log('Message: ' + userID + ' - ' + message);
-				console.log('Output: ' + output);
+				console.log('Message: ' + user + ' (' + userID + ') - ' + message);
+				console.log('Response: ' + output);
 			}
 		}
 	});
 
-	if(Config.following && userID == Config.little && !(/^!follow$/.test(message))) {
+	if(Config.following && userID == Config.owner && !(/^!follow$/.test(message))) {
 		bot.sendMessage({
 			to: channelID,
 			message: message
