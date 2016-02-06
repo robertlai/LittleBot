@@ -7,12 +7,6 @@ var Lol = {
 			if(!tokens[2] || !tokens[3]) {
 				throw new Error('Invalid params');
 			}
-			var currentCommands = _(config.commands).map((command) => {
-				return [command.name, command.exp];
-			})
-			.flatten()
-			.compact()
-			.value();
 
 			var newCommand;
 			if(tokens[2] == 'advanced') {
@@ -27,6 +21,13 @@ var Lol = {
 					name: tokens[2]
 				};
 			}
+
+			var currentCommands = _(config.commands).map((command) => {
+				return [command.name, command.exp];
+			})
+			.flatten()
+			.compact()
+			.value();
 
 			if(currentCommands.indexOf(newCommand.name) + currentCommands.indexOf(newCommand.exp) > -2) {
 				throw new Error('Conflict error');
@@ -74,6 +75,26 @@ var Lol = {
 			}
 			config.removeNotif(tokens[2]);
 			console.log('Unsubscribed from: ' + tokens[2]);
+		}
+	},
+	listen: {
+		auth: 'owner',
+		func: (config, tokens, bot, channel) => {
+			if(!tokens[2] || !tokens[3]) {
+				throw new Error('Invalid params');
+			}
+			config.addAdmin(tokens[2], tokens.slice(3).join(' '));
+			console.log('Added admin: ' + tokens[2]);
+		}
+	},
+	unlisten: {
+		auth: 'owner',
+		func: (config, tokens, bot, channel) => {
+			if(!tokens[2]) {
+				throw new Error('Invalid params');
+			}
+			config.removeAdmin(tokens[2]);
+			console.log('Removed admin: ' + tokens[2]);
 		}
 	}
 };

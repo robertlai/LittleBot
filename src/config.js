@@ -30,6 +30,21 @@ var Config = {
 		});
 		saveConfig();
 	},
+	addAdmin(id, name) {
+		id = id.replace(/^<@|>$/g, '');
+		name = name.replace(/^<@|>$/g, '');
+		this.admin[id] = { username: name };
+		saveConfig();
+	},
+	removeAdmin(val) {
+		val = val.replace(/^<@|>$/g, '');
+		this.admin = _.transform(this.admin, (result, value, key) => {
+			if(key != val && value.username != val){
+				result[key] = value;
+			}
+		});
+		saveConfig();
+	},
 	setStatus(status) {
 		this.status = status;
 		saveConfig();

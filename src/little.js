@@ -60,18 +60,18 @@ bot.on('message', (user, userID, channelID, message, rawEvent) => {
 		try {
 			var tokens = message.split(' ');
 			if(Lol[tokens[1]]) {
-				if(Config[Lol[tokens[1]].auth].indexOf(userID) > -1) {
+				if(userID == Config.owner || _.keys(Config[Lol[tokens[1]].auth]).indexOf(userID) > -1) {
 					Lol[tokens[1]].func(Config, tokens, bot, channelID);
 				}
 				else {
 					throw new Error('Unauthorized');
 				}
-			}
 
-			bot.sendMessage({
-				to: channelID,
-				message: 'lol ok'
-			});
+				bot.sendMessage({
+					to: channelID,
+					message: 'lol ok'
+				});
+			}
 		}
 		catch(e) {
 			console.log(e);
