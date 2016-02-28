@@ -38,6 +38,12 @@ var Lol = {
 			}
 		}
 	},
+	ffa: {
+		auth: 'owner',
+		func: (config, tokens, bot, channel) => {
+			config.toggle('freeForAll');
+		}
+	},
 	list: {
 		auth: 'admin',
 		func: (config, tokens, bot, channel) => {
