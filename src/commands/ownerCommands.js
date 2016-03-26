@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 function OwnerCommands(message, bot, Data, Config) {
 	try {
-		if(/^lol status$/.test(message.content)) {
+		if(/^lol status/.test(message.content)) {
 			console.log('>Received status command.');
 			if(message.author.id !== Config.owner) {
 				throw new Error('Unauthorized');
@@ -16,7 +16,10 @@ function OwnerCommands(message, bot, Data, Config) {
 				message.channel,
 				'lol ok'
 			);
-			console.log('>Reloaded data.');
+			console.log('>Set status.');
+			console.log('================================================================');
+			console.log('Status: ' + status);
+			console.log('================================================================');
 		}
 		else if(/^lol reload$/.test(message.content)) {
 			console.log('>Received reload command.');
