@@ -27,6 +27,7 @@ function AdminCommands(message, bot, Data) {
 					name = params[1];
 					params = params.slice(2);
 				}
+				new RegExp('^' + params[0] + '$');
 				newCommand = {
 					case: true,
 					in: '^' + params[0] + '$',

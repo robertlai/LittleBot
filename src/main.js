@@ -29,14 +29,6 @@ bot.on('message', (message) => {
 	OwnerCommands(message, bot, Data, Config);
 	AdminCommands(message, bot, Data);
 	CommonCommands(message, bot, Data);
-
-	console.log('>Received a message.');
-	console.log('================================================================');
-	console.log('Server: ' + message.channel.server.name + '(' + message.channel.server.id + ')');
-	console.log('Channel: ' + message.channel.name + '(' + message.channel.id + ')');
-	console.log('Author: ' + message.author.username + '(' + message.author.id + ')');
-	console.log('Content: ' + message.content);
-	console.log('================================================================');
 });
 
 bot.login(Config.email, Config.password, () => {
