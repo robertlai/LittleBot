@@ -1,2 +1,2 @@
 require('babel-core/register');
-require('./src/little.js');
+require('./src/main.js');

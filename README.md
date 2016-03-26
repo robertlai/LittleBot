@@ -1,6 +1,6 @@
 # LittleBot
 
-A simple Discord bot in node using discord.io
+A simple Discord bot created using node with discord.js
 
 ## Installation
 
@@ -8,7 +8,7 @@ A simple Discord bot in node using discord.io
 
 ## Usage
 
-Copy default.conf to little.conf, and fill out the relevant fields (email, password, etc.)
+Copy config.sample to config.conf, and enter the relevant information (email, password, your discord user ID).
 
 `npm start`
 
@@ -17,20 +17,23 @@ Copy default.conf to little.conf, and fill out the relevant fields (email, passw
 Using objects in JSON format:
 ```
 {
-  "admin": boolean,
-  "args": string,
   "case": boolean,
-  "exp": string,
-  "func": string,
+  "in": string,
+  "out": string,
   "name": string,
-  "special": boolean,
+  "replace": [
+    {
+      "old": string,
+      "new": string
+    }
+  ],
   "tts": boolean
 }
 ```
-Add the command to little.conf or type `lol add advanced {JSON Object}` in discord.
+Add the command to data.json or type `lol add advanced {JSON Object}` in discord.
 
 Simple 'say' commands can be added with `lol add input output` where input is the text to match, and output is the response from the bot.
 
 ###To remove commands:
 
-Delete the command object from little.conf or type `lol remove name` in discord, where name can be the "name" field or the "exp" field of the command.
+Delete the command object from data.json or type `lol remove name` in discord, where name is the "name" of the command.
