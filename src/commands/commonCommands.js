@@ -1,7 +1,9 @@
 import _ from 'lodash';
 
 function roll(max) {
-	return Math.floor((Math.random() * max) + 1);
+	const maxNum = parseInt(max);
+	const random = Math.ceil(Math.random() * (!_.isNaN(maxNum) ? maxNum : 100));
+	return random - (maxNum < 0 ? 1 : 0);
 }
 
 function CommonCommands(message, bot, Data) {
@@ -15,9 +17,18 @@ function CommonCommands(message, bot, Data) {
 				var output = command.out;
 				_.forEach(command.replace, (replace) => {
 					var newString = replace.new;
-					if(/^\$roll\(\d*\)$/.test(newString)) {
+					if(/^\$roll\(.*\)$/.test(newString)) {
+						const param = newString.match(/\$roll\(([^)]+)\)/);
 						const input = message.content.split(' ')[1];
-						newString = roll(newString.match(/\d+/) || input.match(/\d+/) || 100);
+						if(param) {
+							newString = roll(param[1]);
+						}
+						else if(input){
+							newString = roll(input);
+						}
+						else {
+							newString = roll(100);
+						}
 					}
 					else if(newString === '$user') {
 						newString = '<@' + message.author.id + '>';
