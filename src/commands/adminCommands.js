@@ -17,21 +17,33 @@ function AdminCommands(message, bot, Data) {
 				}
 			}
 			else {
-				const hasName = tokens.indexOf('-n') === 2;
-				if(tokens.length < (hasName ? 6 : 4)) {
+				var params = tokens.slice(2);
+				var name = null;
+				var caseSensitive = true;
+				var done = false;
+				while(!done) {
+					var next = params.shift();
+					if(next === '-n') {
+						name = params.shift();
+					}
+					else if(next === '-i') {
+						caseSensitive = false;
+					}
+					else {
+						done = true;
+					}
+				}
+				if(!next || params.length === 0) {
 					throw new Error('Invalid parameters');
 				}
-				var params = tokens.slice(2);
-				var name = params[0];
-				if(hasName) {
-					name = params[1];
-					params = params.slice(2);
+				new RegExp('^' + next + '$');
+				if(!name) {
+					name = next;
 				}
-				new RegExp('^' + params[0] + '$');
 				newCommand = {
-					case: true,
-					in: '^' + params[0] + '$',
-					out: params.slice(1).join(' '),
+					case: caseSensitive,
+					in: '^' + next + '$',
+					out: params.join(' '),
 					name: name
 				};
 			}
