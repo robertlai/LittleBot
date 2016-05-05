@@ -33,6 +33,9 @@ function CommonCommands(message, bot, Data) {
 					else if(newString === '$user') {
 						newString = '<@' + message.author.id + '>';
 					}
+					else if(newString === '$msg') {
+						newString = message.content;
+					}
 					else if(newString === '$now') {
 						newString = new Date();
 					}
