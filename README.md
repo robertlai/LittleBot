@@ -31,8 +31,15 @@ Using objects in JSON format:
 }
 ```
 Add the command to data.json or type `lol add advanced {JSON Object}` in discord.
+`replace.new` can be a special value; one of: `$msg`, `$roll()`, `$now`, `$userid`, `$username`, which represent the input message, a random integer, the current time, the message author's id or username, respectively.
 
 Simple 'say' commands can be added with `lol add input output` where input is the text to match, and output is the response from the bot.
+Simple commands can be added with `-i` flag to mark as case insensitive, and `-n` flag to set a custom name.
+
+Example usage:
+```
+lol add -i -n testName foo bar
+```
 
 ###To remove commands:
 
