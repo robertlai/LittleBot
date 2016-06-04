@@ -87,19 +87,26 @@ function AdminCommands(message, bot, Data) {
 				'lol ok'
 			);
 		}
-		else if(/^lol commands/.test(message.content)) {
-			console.log('>Received commands command.');
+		else if(/^lol print/.test(message.content)) {
+			console.log('>Received print command.');
 			if(_.findIndex(Data.admin, {id: message.author.id}) === -1) {
 				throw new Error('Unauthorized');
 			}
-			const list = _.map(Data.commands, (command) => {
-				return `- ${command.name}: ${command.in} -> ${command.out}`;
-			});
-			bot.sendMessage(
-				message.channel,
-				'**Commands:**\n' + list.join('\n')
-			);
-			console.log('>Posted command list.');
+			const toPrint = tokens.slice(2).join(' ');
+			const printed = _.find(Data.commands, {name: toPrint});
+			if(printed) {
+				bot.sendMessage(
+					message.channel,
+					`\`\`\`${JSON.stringify(printed, null, '\t')}\`\`\``
+				);
+			}
+			else {
+				throw new Error('Command does not exist');
+			}
+			console.log('>Printed command.');
+			console.log('================================================================');
+			console.log('Name: ' + toPrint);
+			console.log('================================================================');
 		}
 	}
 	catch(err) {
