@@ -87,6 +87,24 @@ function AdminCommands(message, bot, Data) {
 				'lol ok'
 			);
 		}
+		else if(/^lol name/.test(message.content)) {
+			console.log('>Received name command.');
+			if(_.findIndex(Data.admin, {id: message.author.id}) === -1) {
+				throw new Error('Unauthorized');
+			}
+			const toName = tokens.slice(2).join(' ');
+			if(toName) {
+				_.forEach(Data.commands, (command) => {
+					const exp = new RegExp(command.in, (!command.case ? 'i' : ''));
+					if(exp.test(toName)) {
+						bot.sendMessage(
+							message.channel,
+							command.name
+						);
+					}
+				});
+			}
+		}
 		else if(/^lol print/.test(message.content)) {
 			console.log('>Received print command.');
 			if(_.findIndex(Data.admin, {id: message.author.id}) === -1) {
